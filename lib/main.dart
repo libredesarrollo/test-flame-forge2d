@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class MyGame extends Forge2DGame {
   @override
   FutureOr<void> onLoad() {
     add(Player());
-    add(Ground(Vector2(500, 500)));
+    add(Ground(Vector2(300, -300)));
     return super.onLoad();
   }
 }
@@ -36,7 +37,8 @@ class Ground extends BodyComponent {
   Body createBody() {
     Shape shape = EdgeShape()
       ..set(Vector2(0, gameSize.y), Vector2(gameSize.x, gameSize.y));
-    BodyDef bodyDef = BodyDef(userData: this, position: Vector2.zero());
+    BodyDef bodyDef = BodyDef(
+        userData: this, position: Vector2.zero(), type: BodyType.static);
     FixtureDef fixtureDef = FixtureDef(shape, friction: 0.3, density: 1);
     return world.createBody(bodyDef)..createFixture(fixtureDef);
     // throw UnimplementedError();
