@@ -12,8 +12,8 @@ enum MovementType {
   jumpleft,
 }
 
-class Character extends SpriteAnimationComponent
-    with KeyboardHandler, CollisionCallbacks {
+class Character
+    extends SpriteAnimationComponent /* with KeyboardHandler, CollisionCallbacks*/ {
   int animationIndex = 0;
 
   MovementType movementType = MovementType.idle;

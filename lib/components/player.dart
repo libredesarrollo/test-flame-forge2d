@@ -20,9 +20,12 @@ import 'package:testforged2d/components/character.dart';
 import 'package:testforged2d/test/_main.dart';
 import 'package:testforged2d/utils/create_animation_by_limit.dart';
 
-class PlayerBody extends BodyComponent with ContactCallbacks {
+class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   Vector2 mapSize;
   late BodyDef bodyDef;
+  MovementType movementType = MovementType.idle;
+  Vector2 playerMove = Vector2.all(0);
+  final double playerNormalVelocity = 50.0;
   // MyGame game;
   PlayerBody({required this.mapSize});
 
@@ -50,8 +53,63 @@ class PlayerBody extends BodyComponent with ContactCallbacks {
   }
 
   @override
+  bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    if (keysPressed.isEmpty) {
+      movementType = MovementType.idle;
+      playerMove = Vector2.all(0);
+    }
+
+    if (true) {
+      //inGround
+      // RIGHT
+      if (keysPressed.contains(LogicalKeyboardKey.arrowRight) ||
+          keysPressed.contains(LogicalKeyboardKey.keyD)) {
+        if (keysPressed.contains(LogicalKeyboardKey.shiftLeft)) {
+          // RUN
+          movementType = MovementType.runright;
+          playerMove.x = playerNormalVelocity * 3;
+        } else {
+          // WALKING
+          movementType = MovementType.walkingright;
+          playerMove.x = playerNormalVelocity;
+        }
+      }
+      // LEFT
+      if (keysPressed.contains(LogicalKeyboardKey.arrowLeft) ||
+          keysPressed.contains(LogicalKeyboardKey.keyA)) {
+        if (keysPressed.contains(LogicalKeyboardKey.shiftLeft)) {
+          // RUN
+          movementType = MovementType.runleft;
+          playerMove.x = -playerNormalVelocity * 3;
+        } else {
+          // WALKING
+          movementType = MovementType.walkingleft;
+          playerMove.x = -playerNormalVelocity;
+        }
+      }
+      // JUMP
+      if (keysPressed.contains(LogicalKeyboardKey.arrowUp) ||
+          keysPressed.contains(LogicalKeyboardKey.keyW)) {
+        movementType = MovementType.jump;
+      }
+    } else {
+      if (keysPressed.contains(LogicalKeyboardKey.arrowRight) ||
+          keysPressed.contains(LogicalKeyboardKey.keyD)) {
+        // RIGHT
+        movementType = MovementType.jumpright;
+      } else if (keysPressed.contains(LogicalKeyboardKey.arrowLeft) ||
+          keysPressed.contains(LogicalKeyboardKey.keyA)) {
+        // LEFT
+        movementType = MovementType.jumpleft;
+      }
+    }
+
+    return true;
+  }
+
+  @override
   void update(double dt) {
-    body.position.x += dt * 5;
+    body.position.x += dt * playerMove.x;
     // bodyDef.position.x = dt * 500;
     super.update(dt);
   }

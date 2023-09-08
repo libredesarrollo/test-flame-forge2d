@@ -14,7 +14,8 @@ void main() {
   runApp(GameWidget(game: MyGame()));
 }
 
-class MyGame extends Forge2DGame with TapDetector {
+class MyGame extends Forge2DGame
+    with TapDetector, HasKeyboardHandlerComponents {
   MyGame() : super(gravity: Vector2(0, 30));
 
   final cameraWorld = camera.World();
