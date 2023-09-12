@@ -16,7 +16,7 @@ void main() {
 
 class MyGame extends Forge2DGame
     with TapDetector, HasKeyboardHandlerComponents {
-  MyGame() : super(gravity: Vector2(0, 30));
+  MyGame() : super(gravity: Vector2(0, 40));
 
   final cameraWorld = camera.World();
   late final CameraComponent cameraComponent;
@@ -33,9 +33,9 @@ class MyGame extends Forge2DGame
     cameraWorld.add(Ground(gameSize));
     playerBody = PlayerBody(mapSize: gameSize);
     cameraWorld.add(playerBody);
-    playerBody.loaded.then((value) {
-      print("loaded");
-      playerBody.bodyDef.position = Vector2(20, 10);
-    });
+    // playerBody.loaded.then((value) {
+    // print("loaded");
+    // playerBody.body.position = Vector2(20, 10);
+    // });
   }
 }

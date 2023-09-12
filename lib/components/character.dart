@@ -12,23 +12,17 @@ enum MovementType {
   jumpleft,
 }
 
-class Character
-    extends SpriteAnimationComponent /* with KeyboardHandler, CollisionCallbacks*/ {
+class Character extends SpriteAnimationComponent {
   int animationIndex = 0;
 
   MovementType movementType = MovementType.idle;
 
-  double gravity = 15;
-  Vector2 velocity = Vector2(0, 0);
+  // size sprite
+  final double spriteSheetWidth = 680;
+  final double spriteSheetHeight = 472;
 
-  final double spriteSheetWidth = 680, spriteSheetHeight = 472;
-  final double jumpForceUp = 600, jumpForceSide = 100, jumpForceXY = 20;
-
-  bool inGround = false,
-      jumpUp = false,
-      right = true,
-      collisionXRight = false,
-      collisionXLeft = false;
+  bool inGround = false; // player on the floor
+  bool right = true; // player looking to the right
 
   late SpriteAnimation deadAnimation,
       idleAnimation,
@@ -36,6 +30,4 @@ class Character
       runAnimation,
       walkAnimation,
       walkSlowAnimation;
-
-  late RectangleHitbox body /*, foot*/;
 }
