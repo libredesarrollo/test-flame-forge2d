@@ -1,9 +1,10 @@
-import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flame/sprite.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/components.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
+
 import 'package:testforged2d/components/character.dart';
 import 'package:testforged2d/test/_main.dart';
 import 'package:testforged2d/utils/create_animation_by_limit.dart';
