@@ -23,7 +23,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   final double _playerNormalVelocity = 15.0;
   final double _playerNormalJump = -25.0;
 
-  bool inGround = false;
+  bool _inGround = false;
 
   PlayerBody({required this.mapSize});
 
@@ -56,7 +56,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
       _playerMove = Vector2.all(0);
     }
 
-    // if (true) {//inGround
+    // if (true) {//_inGround
     // RIGHT
     if (keysPressed.contains(LogicalKeyboardKey.arrowRight) ||
         keysPressed.contains(LogicalKeyboardKey.keyD)) {
@@ -87,7 +87,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
     if (keysPressed.contains(LogicalKeyboardKey.space)) {
       _movementType = MovementType.jump;
       // print("LogicalKeyboardKey.space");
-      if (inGround) {
+      if (_inGround) {
         _playerMove.y = _playerNormalJump;
       } else {
         _playerMove = Vector2.all(0);
@@ -113,7 +113,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   @override
   void beginContact(Object other, Contact contact) {
     if (other is Ground) {
-      inGround = true;
+      _inGround = true;
       // body.linearVelocity = Vector2.all(0);
     }
 
@@ -123,7 +123,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   @override
   void endContact(Object other, Contact contact) {
     if (other is Ground) {
-      inGround = false;
+      _inGround = false;
       body.linearVelocity = Vector2.all(0);
     }
 
@@ -137,10 +137,10 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
     // print(playerMove.x.toString());
 
-    // if (playerMove.y != 0 && inGround) {
+    // if (playerMove.y != 0 && _inGround) {
     // print(playerMove.y.toString() +
     //     '*************************' +
-    //     inGround.toString());
+    //     _inGround.toString());
     // print(body.position.x.toString() + "-----");
     // body.linearVelocity = Vector2(body.position.x, playerMove.y);
     //body.linearVelocity = playerMove; //Vector2(body.position.x, playerMove.y);
@@ -151,7 +151,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
     // body.applyForce(playerMove * 2000);
     // body.applyLinearImpulse(playerMove * 50);
 
-    // inGround = false;
+    // _inGround = false;
     // }
 
     // body.linearVelocity = velocity;
@@ -165,10 +165,10 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
       body.linearVelocity = _playerMove;
     }
 
-    // if (playerMove.y != 0 && inGround) {
+    // if (playerMove.y != 0 && _inGround) {
     //   print(playerMove.y.toString() +
     //       "  " +
-    //       inGround.toString() +
+    //       _inGround.toString() +
     //       "   " +
     //       body.linearVelocity.toString() +
     //       "++++");
