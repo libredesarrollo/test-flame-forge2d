@@ -56,6 +56,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
       _playerMove = Vector2.all(0);
     }
 
+    // if (true) {//_inGround
     // RIGHT
     if (keysPressed.contains(LogicalKeyboardKey.arrowRight) ||
         keysPressed.contains(LogicalKeyboardKey.keyD)) {
@@ -85,12 +86,24 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
     // JUMP
     if (keysPressed.contains(LogicalKeyboardKey.space)) {
       _movementType = MovementType.jump;
+      // print("LogicalKeyboardKey.space");
       if (_inGround) {
         _playerMove.y = _playerNormalJump;
       } else {
         _playerMove = Vector2.all(0);
       }
     }
+    // } else {
+    //   if (keysPressed.contains(LogicalKeyboardKey.arrowRight) ||
+    //       keysPressed.contains(LogicalKeyboardKey.keyD)) {
+    //     // RIGHT
+    //     movementType = MovementType.jumpright;
+    //   } else if (keysPressed.contains(LogicalKeyboardKey.arrowLeft) ||
+    //       keysPressed.contains(LogicalKeyboardKey.keyA)) {
+    //     // LEFT
+    //     movementType = MovementType.jumpleft;
+    //   }
+    // }
 
     _playerComponent.setMode(_movementType);
 
@@ -111,6 +124,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   void endContact(Object other, Contact contact) {
     if (other is Ground) {
       _inGround = false;
+      // body.linearVelocity = Vector2.all(0);
     }
 
     super.endContact(other, contact);
@@ -118,11 +132,55 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
   @override
   void update(double dt) {
+    // final velocity = body.linearVelocity;
+    // final position = body.position;
+
+    // print(playerMove.x.toString());
+
+    // if (playerMove.y != 0 && _inGround) {
+    // print(playerMove.y.toString() +
+    //     '*************************' +
+    //     _inGround.toString());
+    // print(body.position.x.toString() + "-----");
+    // body.linearVelocity = Vector2(body.position.x, playerMove.y);
+    //body.linearVelocity = playerMove; //Vector2(body.position.x, playerMove.y);
+    // body.linearVelocity = playerMove;
+    // body.linearVelocity.y = playerMove.y;
+    // body.linearVelocity.x = body.position.x;
+
+    // body.applyForce(playerMove * 2000);
+    // body.applyLinearImpulse(playerMove * 50);
+
+    // _inGround = false;
+    // }
+
+    // body.linearVelocity = velocity;
+
     body.setTransform(body.position, 0);
     if (_playerMove != Vector2.all(0)) {
+      // print(playerMove.x.toString() + " " + body.position.x.toString());
+      print(body.linearVelocity.toString());
+      // body.position.x += dt * playerMove.x;
+      // body.position.y += dt * playerMove.y;
       body.linearVelocity = _playerMove;
     }
 
+    // if (playerMove.y != 0 && _inGround) {
+    //   print(playerMove.y.toString() +
+    //       "  " +
+    //       _inGround.toString() +
+    //       "   " +
+    //       body.linearVelocity.toString() +
+    //       "++++");
+
+    // body.linearVelocity = playerMove;
+
+    // body.applyForce(Vector2(body.position.x, playerMove.y * 20000));
+    //body.applyLinearImpulse(Vector2(50, playerMove.y * 200));
+    // body.position.x = 80;
+    // }
+
+    // bodyDef.position.x = dt * 500;
     super.update(dt);
   }
 }
