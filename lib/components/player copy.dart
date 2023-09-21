@@ -220,8 +220,9 @@ class PlayerComponent extends Character {
         animation = runAnimation;
         break;
       case MovementType.jump:
-      case MovementType.jumpleft:
-      case MovementType.jumpright:
+      case MovementType.fall:
+        // case MovementType.jumpleft:
+        // case MovementType.jumpright:
         animation = jumpAnimation;
         break;
     }

@@ -8,14 +8,13 @@ enum MovementType {
   runleft,
   idle,
   jump,
-  jumpright,
-  jumpleft,
+  fall
 }
 
 class Character extends SpriteAnimationComponent {
   int animationIndex = 0;
 
-  MovementType movementType = MovementType.idle;
+  // MovementType movementType = MovementType.idle;
 
   // size sprite
   final double spriteSheetWidth = 680;

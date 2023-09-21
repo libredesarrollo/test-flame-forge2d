@@ -6,7 +6,8 @@ import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 
 import 'package:testforged2d/components/character.dart';
-import 'package:testforged2d/test/_main.dart';
+import 'package:testforged2d/main.dart';
+
 import 'package:testforged2d/utils/create_animation_by_limit.dart';
 
 class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
@@ -52,7 +53,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     if (keysPressed.isEmpty) {
-      _movementType = MovementType.idle;
+      if (_inGround) _movementType = MovementType.idle;
       _playerMove = Vector2.all(0);
     }
 
@@ -118,9 +119,30 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
   @override
   void update(double dt) {
+    // keeps the player upright
     body.setTransform(body.position, 0);
+
+    // only if there is movement
     if (_playerMove != Vector2.all(0)) {
       body.linearVelocity = _playerMove;
+    }
+    print('***' +
+        _movementType.toString() +
+        " " +
+        body.linearVelocity.y.toString());
+    if (body.linearVelocity.y > 0.1 && _movementType == MovementType.jump) {
+      //  print(body.linearVelocity.y.toString());
+      // falling
+      // print("falling");
+      _movementType = MovementType.fall;
+      _playerComponent.setMode(MovementType.fall);
+    } else if (body.linearVelocity.y == 0 &&
+        _movementType == MovementType.fall) {
+      // si el player esta en el aire, cayendo al entrar en contacto
+      // con el piso, tiene velocidad cero, se coloca en reposo
+      // si no queda con la animacion de saltando
+      _movementType = MovementType.idle;
+      _playerComponent.setMode(_movementType);
     }
 
     super.update(dt);
@@ -162,8 +184,7 @@ class PlayerComponent extends Character {
         animation = runAnimation;
         break;
       case MovementType.jump:
-      case MovementType.jumpleft:
-      case MovementType.jumpright:
+      case MovementType.fall:
         animation = jumpAnimation;
         break;
     }
