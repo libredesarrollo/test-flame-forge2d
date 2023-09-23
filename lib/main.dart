@@ -53,6 +53,5 @@ class Ground extends BodyComponent {
         userData: this, position: Vector2.zero(), type: BodyType.static);
     FixtureDef fixtureDef = FixtureDef(shape, friction: 0.3, density: 1);
     return world.createBody(bodyDef)..createFixture(fixtureDef);
-    // throw UnimplementedError();
   }
 }

@@ -52,9 +52,11 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    // print(keysPressed.toString() + "   " + _movementType.toString());
     if (keysPressed.isEmpty) {
       if (_inGround) _movementType = MovementType.idle;
       _playerMove = Vector2.all(0);
+      body.linearVelocity = Vector2.all(0);
     }
 
     // RIGHT
@@ -62,11 +64,19 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
         keysPressed.contains(LogicalKeyboardKey.keyD)) {
       if (keysPressed.contains(LogicalKeyboardKey.shiftLeft)) {
         // RUN
-        _movementType = MovementType.runright;
+        if (_movementType != MovementType.jump &&
+            _movementType != MovementType.fall) {
+          _movementType = MovementType.runright;
+        }
+
         _playerMove.x = _playerNormalVelocity * 3;
       } else {
         // WALKING
-        _movementType = MovementType.walkingright;
+        if (_movementType != MovementType.jump &&
+            _movementType != MovementType.fall) {
+          _movementType = MovementType.walkingright;
+        }
+
         _playerMove.x = _playerNormalVelocity;
       }
     }
@@ -75,11 +85,19 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
         keysPressed.contains(LogicalKeyboardKey.keyA)) {
       if (keysPressed.contains(LogicalKeyboardKey.shiftLeft)) {
         // RUN
-        _movementType = MovementType.runleft;
+
+        if (_movementType != MovementType.jump &&
+            _movementType != MovementType.fall) {
+          _movementType = MovementType.runleft;
+        }
         _playerMove.x = -_playerNormalVelocity * 3;
       } else {
         // WALKING
-        _movementType = MovementType.walkingleft;
+        if (_movementType != MovementType.jump &&
+            _movementType != MovementType.fall) {
+          _movementType = MovementType.walkingleft;
+        }
+
         _playerMove.x = -_playerNormalVelocity;
       }
     }
@@ -89,7 +107,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
       if (_inGround) {
         _playerMove.y = _playerNormalJump;
       } else {
-        _playerMove = Vector2.all(0);
+        _playerMove.y = 0;
       }
     }
 
@@ -119,32 +137,42 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
   @override
   void update(double dt) {
+    // print("$_movementType -- ${body.linearVelocity}");
+
     // keeps the player upright
     body.setTransform(body.position, 0);
 
     // only if there is movement
     if (_playerMove != Vector2.all(0)) {
-      body.linearVelocity = _playerMove;
+      if (body.linearVelocity.y.abs() > 0.1 && _playerMove.y == 0) {
+        // si el player tiene una velocidad aplicada en el eje Y, no se varia
+        // esto evita que cuando el player esta en el aire y se mueve en el eje X
+        // se aplique el _playerMove.y==0 en la velocidad del player
+        // if the player has a speed applied to the Y axis, it does not vary
+        // this prevents when the player is in the air and moves in the X axis
+        // _playerMove.y==0 is applied to the player speed
+        body.linearVelocity.x = _playerMove.x;
+      } else {
+        body.linearVelocity = _playerMove;
+      }
     }
-    print('***' +
-        _movementType.toString() +
-        " " +
-        body.linearVelocity.y.toString());
+
     if (body.linearVelocity.y > 0.1 && _movementType == MovementType.jump) {
-      //  print(body.linearVelocity.y.toString());
-      // falling
-      // print("falling");
+      // el player tiene una velocidad aplicada positiva, por lo tanto, esta cayendo
+      // The player has a positive applied velocity, therefore, he is falling
       _movementType = MovementType.fall;
       _playerComponent.setMode(MovementType.fall);
-    } else if (body.linearVelocity.y == 0 &&
+    } else if (/*body.linearVelocity.y == 0*/ _inGround &&
         _movementType == MovementType.fall) {
       // si el player esta en el aire, cayendo al entrar en contacto
       // con el piso, tiene velocidad cero, se coloca en reposo
       // si no queda con la animacion de saltando
+      // if the player is in the air, falling upon contact
+      // with the floor, it has zero speed, it is placed at rest
+      // if it doesn't stay with the jumping animation
       _movementType = MovementType.idle;
       _playerComponent.setMode(_movementType);
     }
-
     super.update(dt);
   }
 }
@@ -216,30 +244,4 @@ class PlayerComponent extends Character {
 
     return super.onLoad();
   }
-
-  // void reset({bool dead = false}) async {
-  //   movementType = MovementType.idle;
-  //   if (dead) {
-  //     animation = deadAnimation;
-
-  //     deadAnimationTicker = deadAnimation.createTicker();
-  //     deadAnimationTicker.onFrame = (index) {
-  //       // print("-----" + index.toString());
-  //       if (deadAnimationTicker.isLastFrame) {
-  //         animation = idleAnimation;
-  //         // position =
-  //         //     Vector2(spriteSheetWidth / 4, mapSize.y - spriteSheetHeight);
-  //       }
-  //     };
-
-  //     deadAnimationTicker.onComplete = () {
-  //       if (animation == deadAnimation) {
-  //         animation = idleAnimation;
-  //       }
-  //     };
-  //   } else {
-  //     animation = idleAnimation;
-  //     size = Vector2(spriteSheetWidth / 40, spriteSheetHeight / 40);
-  //   }
-  // }
 }
