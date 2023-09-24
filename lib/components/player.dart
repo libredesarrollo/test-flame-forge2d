@@ -20,13 +20,21 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   MovementType _movementType = MovementType.idle;
 
   Vector2 _playerMove = Vector2.all(0);
+
   // mobility and jump
   final double _playerNormalVelocity = 15.0;
   final double _playerNormalJump = -25.0;
 
   bool _inGround = false;
 
-  PlayerBody({required this.mapSize});
+  // double jump
+  bool _doubleJump = false;
+  final double _timeToDoubleJump = .5;
+  double _elapseTimeToDoubleJump = 0;
+
+  PlayerBody({required this.mapSize}) : super() {
+    renderBody = false;
+  }
 
   @override
   Future<void> onLoad() async {
@@ -107,8 +115,24 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
       if (_inGround) {
         _playerMove.y = _playerNormalJump;
       } else {
-        _playerMove.y = 0;
+        // in the air
+        if (_elapseTimeToDoubleJump >= _timeToDoubleJump && !_doubleJump) {
+          // el usuario preciono la tecla para un doble salto
+          // paso el tiempo en el cual se puede usar el doble salto
+          // double jump active
+          _doubleJump = true;
+          _playerMove.y = _playerNormalJump;
+        } else {
+          // reset the jump
+          _playerMove.y = 0;
+        }
       }
+    }
+
+    // IMPULSE
+    if (keysPressed.contains(LogicalKeyboardKey.keyC)) {
+      print("sssss");
+      _playerMove.x *= 2000;
     }
 
     _playerComponent.setMode(_movementType);
@@ -138,6 +162,18 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   @override
   void update(double dt) {
     // print("$_movementType -- ${body.linearVelocity}");
+
+    // *** double jump
+    if (_movementType == MovementType.jump ||
+        _movementType == MovementType.fall) {
+      // if the user is in the air
+      _elapseTimeToDoubleJump += dt;
+    } else {
+      // reset the properties to double jump
+      _elapseTimeToDoubleJump = 0;
+      _doubleJump = false;
+    }
+    // *** double jump
 
     // keeps the player upright
     body.setTransform(body.position, 0);
