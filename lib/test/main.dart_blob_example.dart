@@ -47,7 +47,7 @@ class MyGame extends Forge2DGame with TapDetector {
       for (var i = 0; i < 20; i++)
         BlobPart(i, jointDef, blobRadius, blobCenter),
     ]);
-    world.createJoint(ConstantVolumeJoint(world, jointDef));
+    //********* */ world.createJoint(ConstantVolumeJoint(world, jointDef));
   }
 
   @override

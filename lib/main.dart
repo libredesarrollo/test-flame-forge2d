@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'package:flame/camera.dart' as camera;
+// import 'package:flame/camera.dart' as camera;
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -17,28 +17,50 @@ class MyGame extends Forge2DGame
     with TapDetector, HasKeyboardHandlerComponents {
   MyGame() : super(gravity: Vector2(0, 40));
 
-  final cameraWorld = camera.World();
-  late final CameraComponent cameraComponent;
+  //final cameraWorld = camera.World();
+  // late final CameraComponent cameraComponent;
 
   late PlayerBody playerBody;
 
   @override
   Future<void> onLoad() async {
-    cameraComponent = CameraComponent(world: cameraWorld);
-    cameraComponent.viewfinder.anchor = Anchor.topLeft;
+    // cameraComponent = CameraComponent(world: cameraWorld);
+    // cameraComponent.viewfinder.anchor = Anchor.topLeft;
 
-    addAll([cameraComponent, cameraWorld]);
+    camera.viewfinder.anchor = Anchor.topLeft;
 
-    Vector2 gameSize = screenToWorld(cameraComponent.viewport.size);
-    cameraWorld.add(Ground(gameSize));
+    // addAll([cameraComponent, cameraWorld]);
+
+    Vector2 gameSize = screenToWorld(camera.viewport.size);
+    world.add(Ground(gameSize));
 
     playerBody = PlayerBody(mapSize: gameSize);
-    cameraWorld.add(playerBody);
+    world.add(playerBody);
     // playerBody.loaded.then((value) {
     // print("loaded");
     // playerBody.body.position = Vector2(20, 10);
     // });
   }
+
+  // @override
+  // Future<void> onLoad() async {
+  // cameraComponent = CameraComponent(world: cameraWorld);
+  // cameraComponent.viewfinder.anchor = Anchor.topLeft;
+
+  //camera.viewfinder.anchor = Anchor.topLeft;
+
+  // addAll([cameraComponent, cameraWorld]);
+
+  // Vector2 gameSize = screenToWorld(cameraComponent.viewport.size);
+  // cameraWorld.add(Ground(gameSize));
+
+  // playerBody = PlayerBody(mapSize: gameSize);
+  // cameraWorld.add(playerBody);
+  // playerBody.loaded.then((value) {
+  // print("loaded");
+  // playerBody.body.position = Vector2(20, 10);
+  // });
+  // }
 }
 
 class Ground extends BodyComponent {

@@ -99,7 +99,7 @@ class _Base extends BodyComponent with ContactCallbacks {
     print("beginContact" + other.toString());
 
     if (other is Ball || other is Box) {
-      gameRef.add(SpriteAnimationComponent(
+      game.add(SpriteAnimationComponent(
         position: body.position,
         animation: explotionAnimation.clone(),
         anchor: Anchor.center,
