@@ -24,6 +24,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   // mobility and jump
   final double _playerNormalVelocity = 15.0;
   final double _playerNormalJump = -25.0;
+  final double _playerNormalImpulse = 2000.0;
 
   bool _inGround = false;
 
@@ -131,8 +132,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
     // IMPULSE
     if (keysPressed.contains(LogicalKeyboardKey.keyC)) {
-      print("sssss");
-      _playerMove.x *= 2000;
+      _playerMove.x *= _playerNormalImpulse;
     }
 
     _playerComponent.setMode(_movementType);
