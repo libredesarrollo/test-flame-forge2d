@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flame/flame.dart';
-import 'package:flame/camera.dart' as camera;
+// import 'package:flame/camera.dart' as camera;
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -29,28 +29,24 @@ void main() {
 
 class MyGame extends Forge2DGame with TapDetector {
   MyGame() : super(gravity: Vector2(0, 30));
-  final cameraWorld = camera.World();
-  late final CameraComponent cameraComponent;
 
   @override
   Future<void> onLoad() async {
-    cameraComponent = CameraComponent(world: cameraWorld);
-    cameraComponent.viewfinder.anchor = Anchor.topLeft;
+    camera.viewfinder.anchor = Anchor.topLeft;
 
-    addAll([cameraComponent, cameraWorld]);
-    Vector2 gameSize = screenToWorld(cameraComponent.viewport.size);
-    cameraWorld.add(Ground(gameSize));
+    Vector2 gameSize = screenToWorld(camera.viewport.size);
+    world.add(Ground(gameSize));
   }
 
   @override
   void onTapDown(TapDownInfo info) {
     super.onTapDown(info);
     // cameraWorld.add(Box(info.eventPosition.game));
-
+    print("fffff");
     if (Random.secure().nextBool()) {
-      cameraWorld.add(Box(info.eventPosition.game));
+      world.add(Box(screenToWorld(info.eventPosition.game)));
     } else {
-      cameraWorld.add(Ball(info.eventPosition.game));
+      world.add(Ball(screenToWorld(info.eventPosition.game)));
     }
   }
 }
@@ -87,11 +83,11 @@ class _Base extends BodyComponent with ContactCallbacks {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final spriteImage = await Flame.images.load('explotions.png');
+    final spriteImage = await Flame.images.load('explotion.png');
     final spriteSheet =
-        SpriteSheet(image: spriteImage, srcSize: Vector2(192, 192));
+        SpriteSheet(image: spriteImage, srcSize: Vector2(306, 295));
     explotionAnimation = spriteSheet.createAnimationByLimit(
-        xInit: 0, yInit: 0, step: 20, sizeX: 5, stepTime: .03, loop: false);
+        xInit: 0, yInit: 0, step: 6, sizeX: 3, stepTime: .03, loop: false);
   }
 
   @override
@@ -99,7 +95,7 @@ class _Base extends BodyComponent with ContactCallbacks {
     print("beginContact" + other.toString());
 
     if (other is Ball || other is Box) {
-      game.add(SpriteAnimationComponent(
+      world.add(SpriteAnimationComponent(
         position: body.position,
         animation: explotionAnimation.clone(),
         anchor: Anchor.center,
