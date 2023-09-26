@@ -41,8 +41,7 @@ class MyGame extends Forge2DGame with TapDetector {
   @override
   void onTapDown(TapDownInfo info) {
     super.onTapDown(info);
-    // cameraWorld.add(Box(info.eventPosition.game));
-    print("fffff");
+
     if (Random.secure().nextBool()) {
       world.add(Box(screenToWorld(info.eventPosition.game)));
     } else {
@@ -92,8 +91,6 @@ class _Base extends BodyComponent with ContactCallbacks {
 
   @override
   void beginContact(Object other, Contact contact) {
-    print("beginContact" + other.toString());
-
     if (other is Ball || other is Box) {
       world.add(SpriteAnimationComponent(
         position: body.position,
@@ -111,7 +108,6 @@ class _Base extends BodyComponent with ContactCallbacks {
 
   @override
   void endContact(Object other, Contact contact) {
-    print("endContact" + other.toString());
     super.endContact(other, contact);
   }
 
