@@ -6,6 +6,7 @@ import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 
 import 'package:testforged2d/components/character.dart';
+import 'package:testforged2d/components/ground.dart';
 import 'package:testforged2d/main.dart';
 
 import 'package:testforged2d/utils/create_animation_by_limit.dart';
@@ -142,7 +143,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
   @override
   void beginContact(Object other, Contact contact) {
-    if (other is Ground) {
+    if (other is GroundBody) {
       _inGround = true;
       body.linearVelocity = Vector2.all(0);
     }
@@ -152,7 +153,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
 
   @override
   void endContact(Object other, Contact contact) {
-    if (other is Ground) {
+    if (other is GroundBody) {
       _inGround = false;
     }
 
