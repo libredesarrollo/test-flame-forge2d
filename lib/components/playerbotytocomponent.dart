@@ -7,6 +7,7 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 
 import 'package:testforged2d/components/character.dart';
 import 'package:testforged2d/components/ground.dart';
+import 'package:testforged2d/main.dart';
 
 import 'package:testforged2d/utils/create_animation_by_limit.dart';
 
@@ -34,7 +35,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
   double _elapseTimeToDoubleJump = 0;
 
   PlayerBody({required this.mapSize}) : super() {
-    renderBody = true;
+    renderBody = false;
   }
 
   @override
@@ -56,7 +57,7 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
         type: BodyType.dynamic,
         userData: this);
     FixtureDef fixtureDef =
-        FixtureDef(shape, friction: 1, density: 15, restitution: 0);
+        FixtureDef(shape, friction: 0, density: 15, restitution: 0);
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
 
@@ -169,10 +170,12 @@ class PlayerBody extends BodyComponent with ContactCallbacks, KeyboardHandler {
         _movementType == MovementType.fall) {
       // if the user is in the air
       _elapseTimeToDoubleJump += dt;
+      // body.setActive(false);
     } else {
       // reset the properties to double jump
       _elapseTimeToDoubleJump = 0;
       _doubleJump = false;
+      // body.setActive(true);
     }
     // *** double jump
 
@@ -219,7 +222,7 @@ class PlayerComponent extends Character {
   late SpriteAnimationTicker deadAnimationTicker;
 
   PlayerComponent({required this.mapSize}) : super() {
-    anchor = Anchor.topLeft;
+    anchor = Anchor.center;
   }
 
   // set the animation

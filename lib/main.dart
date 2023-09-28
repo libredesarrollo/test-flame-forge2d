@@ -30,9 +30,11 @@ class MyGame extends Forge2DGame
   @override
   Future<void> onLoad() async {
     // cameraComponent = CameraComponent(world: cameraWorld);
-    // cameraComponent.viewfinder.anchor = Anchor.topLeft;
 
     camera.viewfinder.anchor = Anchor.topLeft;
+
+    // camera.viewfinder.anchor = Anchor.topLeft;
+    //camera.viewfinder.anchor = Anchor(0.5, 0.5);
 
     // addAll([cameraComponent, cameraWorld]);
 
@@ -40,7 +42,13 @@ class MyGame extends Forge2DGame
 
     // background = TileMapComponent(game: this);
     playerBody = PlayerBody(mapSize: gameSize);
-    // camera.follow(playerBody);
+
+    playerBody.loaded.then((value) {
+      playerBody.playerComponent.loaded.then((value) {
+        camera.follow(playerBody);
+        print('fffff');
+      });
+    });
 
     // world.add(background);
     world.add(playerBody);
@@ -68,7 +76,8 @@ class MyGame extends Forge2DGame
     for (var obj in objGroup!.objects) {
       world.add(GroundBody(
           size: screenToWorld(Vector2(obj.width, obj.height)),
-          pos: screenToWorld(Vector2(obj.x, obj.y))));
+          pos: screenToWorld(
+              Vector2(obj.x + (obj.width / 2), obj.y + (obj.height / 2)))));
       // add(GroundBody(
       //     size: game.screenToWorld(Vector2(obj.width, obj.height)),
       //     position: game.screenToWorld(Vector2(obj.x, obj.y))));
