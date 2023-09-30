@@ -8,6 +8,7 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:testforged2d/background/tile_map_component.dart';
+import 'package:testforged2d/components/character.dart';
 import 'package:testforged2d/components/ground.dart';
 
 import 'package:testforged2d/components/player.dart';
@@ -20,7 +21,7 @@ class MyGame extends Forge2DGame
     with TapDetector, HasKeyboardHandlerComponents {
   MyGame() : super(gravity: Vector2(0, 40), zoom: 10);
 
-  late TileMapComponent background;
+  // late TileMapComponent background;
 
   //final cameraWorld = camera.World();
   // late final CameraComponent cameraComponent;
@@ -33,11 +34,6 @@ class MyGame extends Forge2DGame
 
     camera.viewfinder.anchor = Anchor.topLeft;
 
-    // camera.viewfinder.anchor = Anchor.topLeft;
-    //camera.viewfinder.anchor = Anchor(0.5, 0.5);
-
-    // addAll([cameraComponent, cameraWorld]);
-
     Vector2 gameSize = screenToWorld(camera.viewport.size);
 
     // background = TileMapComponent(game: this);
@@ -46,7 +42,7 @@ class MyGame extends Forge2DGame
     playerBody.loaded.then((value) {
       playerBody.playerComponent.loaded.then((value) {
         camera.follow(playerBody);
-        print('fffff');
+        camera.viewfinder.anchor = Anchor.center;
       });
     });
 
@@ -54,6 +50,9 @@ class MyGame extends Forge2DGame
     world.add(playerBody);
 
     tile();
+
+    world.physicsWorld
+        .setContactFilter(CustomContactFilter(playerBody: playerBody));
 
     // background.loaded.then(
     //   (value) {
@@ -68,19 +67,13 @@ class MyGame extends Forge2DGame
 
   tile() async {
     final tiledMap = await TiledComponent.load('map3.tmx', Vector2.all(32));
-
-    // scale = Vector2.all(.5);
-
     final objGroup = tiledMap.tileMap.getLayer<ObjectGroup>('ground');
-    // position = Vector2(0, 0);
+
     for (var obj in objGroup!.objects) {
       world.add(GroundBody(
           size: screenToWorld(Vector2(obj.width, obj.height)),
           pos: screenToWorld(
               Vector2(obj.x + (obj.width / 2), obj.y + (obj.height / 2)))));
-      // add(GroundBody(
-      //     size: game.screenToWorld(Vector2(obj.width, obj.height)),
-      //     position: game.screenToWorld(Vector2(obj.x, obj.y))));
     }
     tiledMap.scale = Vector2.all(.1);
     world.add(tiledMap);
@@ -121,3 +114,21 @@ class MyGame extends Forge2DGame
 //     return world.createBody(bodyDef)..createFixture(fixtureDef);
 //   }
 // }
+
+class CustomContactFilter implements ContactFilter {
+  final PlayerBody playerBody;
+
+  CustomContactFilter({required this.playerBody});
+
+  @override
+  bool shouldCollide(Fixture fixtureA, Fixture fixtureB) {
+    // si el player esta en el aire, puede transpasar los tiles
+    // verificamos que los cuerpos en contacto son el player y el piso
+    if (playerBody.movementType == MovementType.jump &&
+        (fixtureA.body.userData is PlayerBody &&
+            fixtureB.body.userData is GroundBody)) {
+      return false;
+    }
+    return true;
+  }
+}
