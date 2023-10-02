@@ -30,24 +30,19 @@ class MyGame extends Forge2DGame
 
   @override
   Future<void> onLoad() async {
-    // cameraComponent = CameraComponent(world: cameraWorld);
-
     camera.viewfinder.anchor = Anchor.topLeft;
-
     Vector2 gameSize = screenToWorld(camera.viewport.size);
-
-    // background = TileMapComponent(game: this);
     playerBody = PlayerBody(mapSize: gameSize);
+    world.add(playerBody);
 
     playerBody.loaded.then((value) {
       playerBody.playerComponent.loaded.then((value) {
-        camera.follow(playerBody);
+        camera.follow(playerBody.playerComponent);
         camera.viewfinder.anchor = Anchor.center;
       });
     });
 
     // world.add(background);
-    world.add(playerBody);
 
     tile();
 
@@ -70,10 +65,16 @@ class MyGame extends Forge2DGame
     final objGroup = tiledMap.tileMap.getLayer<ObjectGroup>('ground');
 
     for (var obj in objGroup!.objects) {
+      // BOX
       world.add(GroundBody(
-          size: screenToWorld(Vector2(obj.width, obj.height)),
+          size: screenToWorld(Vector2(obj.width / 2, obj.height / 2)),
           pos: screenToWorld(
               Vector2(obj.x + (obj.width / 2), obj.y + (obj.height / 2)))));
+
+      // LINE
+      // world.add(GroundBody(
+      //     size: screenToWorld(Vector2(obj.width, obj.height)),
+      //     pos: screenToWorld(Vector2(obj.x, obj.y))));
     }
     tiledMap.scale = Vector2.all(.1);
     world.add(tiledMap);

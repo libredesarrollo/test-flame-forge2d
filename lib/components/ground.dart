@@ -1,6 +1,5 @@
 import 'package:flame_forge2d/flame_forge2d.dart';
 
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
 class GroundBody extends BodyComponent {
@@ -13,14 +12,20 @@ class GroundBody extends BodyComponent {
 
   @override
   Body createBody() {
-    final shape = PolygonShape();
     // paint = BasicPalette.transparent.paint();
 
     // Vector2 s = game.screenToWorld(size);
 
-    shape.setAsBoxXY(size.x / 2, size.y / 2);
+    //*** box
+    final shape = PolygonShape()..setAsBoxXY(size.x, size.y);
     final bodyDef =
         BodyDef(position: pos, type: BodyType.static, userData: this);
+
+    //***   line
+    // final shape = EdgeShape()..set(pos, Vector2(pos.x + size.x, pos.y));
+    // BodyDef bodyDef = BodyDef(
+    //     userData: this, position: Vector2.zero(), type: BodyType.static);
+
     // Vector2 s = game.screenToWorld(size);
 
     // shape.setAsBoxXY(s.x / 2, s.y / 2);
@@ -30,8 +35,6 @@ class GroundBody extends BodyComponent {
     //     userData: this);
 
     FixtureDef fixtureDef = FixtureDef(shape, density: 1, friction: 0);
-
-    // final shape = EdgeShape()..set(Vector2(size.x / 2, size.y / 2), position);
 
     // BodyDef bodyDef = BodyDef(
     //     userData: this, position: Vector2.zero(), type: BodyType.static);
